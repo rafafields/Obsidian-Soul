@@ -1,0 +1,10 @@
+{
+	"id": "obsidian-soul",
+	"name": "Soul",
+	"version": "1.0.2",
+	"minAppVersion": "1.4.0",
+	"description": "A minimal AI agent with transparent, vault-based long-term memory and customizable soul personalities.",
+	"author": "Rafafields",
+	"authorUrl": "https://github.com/Rafafields",
+	"isDesktopOnly": false
+}
