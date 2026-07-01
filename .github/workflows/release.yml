@@ -1,0 +1,56 @@
+name: Release Obsidian plugin
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build plugin
+        run: npm run build
+
+      - name: Verify required files
+        run: |
+          test -f manifest.json || (echo "manifest.json missing" && exit 1)
+          test -f main.js || (echo "main.js missing" && exit 1)
+          if [ ! -f styles.css ]; then
+            echo "styles.css not found, creating empty one"
+            touch styles.css
+          fi
+
+      - name: Check tag matches manifest version
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          VERSION=$(node -p "require('./manifest.json').version")
+          if [ "$TAG" != "$VERSION" ]; then
+            echo "Tag ($TAG) does not match manifest version ($VERSION)"
+            exit 1
+          fi
+
+      - name: Create GitHub release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          gh release create "$TAG" \
+            --title="$TAG" \
+            --generate-notes \
+            main.js manifest.json styles.css
