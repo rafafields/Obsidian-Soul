@@ -1,4 +1,4 @@
-import { EMOJI_ASSETS, THINKING_PNG, INLOVE_PNG } from '../emojis';
+import { CURATED_EMOJIS, THINKING_FILE, INLOVE_FILE, getEmojiSrc, getAssetSrc } from '../emojis';
 
 export type MascotState =
 	| 'idle'
@@ -67,17 +67,20 @@ export function createMascotImg(
 		} else {
 			// Use the soul's own animated PNG if it exists in the curated set;
 			// otherwise fall back to the state-specific emoji (e.g. wizard has no soul emoji).
-			const emojiChar = EMOJI_ASSETS[currentEmoji] ? currentEmoji : (STATE_EMOJI[state] ?? '🤔');
-			const src = EMOJI_ASSETS[emojiChar] ?? THINKING_PNG;
-			img.setAttribute('src', src);
+			const emojiChar = CURATED_EMOJIS.includes(currentEmoji) ? currentEmoji : (STATE_EMOJI[state] ?? '🤔');
+			const src = getEmojiSrc(emojiChar) ?? getAssetSrc(THINKING_FILE);
+			if (src) img.setAttribute('src', src);
 			emojiSpan.style.display = 'none';
 			img.style.display = '';
 		}
 	}
 
 	// Preload inlove PNG so it renders instantly when needed
-	const preloadInlove = new Image();
-	preloadInlove.src = INLOVE_PNG;
+	const inloveSrc = getAssetSrc(INLOVE_FILE);
+	if (inloveSrc) {
+		const preloadInlove = new Image();
+		preloadInlove.src = inloveSrc;
+	}
 
 	applyState(initialState);
 

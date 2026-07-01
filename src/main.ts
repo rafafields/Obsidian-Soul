@@ -18,6 +18,7 @@ import { SetupWizard } from './wizard/SetupWizard';
 import { refreshSystemDocs } from './wizard/WizardVaultInit';
 import { LockIcons } from './ui/LockIcons';
 import { VaultHooksManager } from './vault/VaultHooksManager';
+import { initEmojiAssets } from './emojis';
 
 const CORE_FILES = [
 	'_agent/user.md',
@@ -45,6 +46,8 @@ export default class MinimalAgentPlugin extends Plugin {
 
 	async onload() {
 		await this.loadSettings();
+
+		initEmojiAssets(this.app, this.manifest);
 
 		this.vaultManager = new VaultManager(this.app);
 		this.parser = new FrontmatterParser();

@@ -24,7 +24,7 @@ All agent state — personality, configuration, memory — lives as human-readab
 
 ### Manual
 
-1. Download `main.js`, `manifest.json`, and `styles.css` from the [latest release](../../releases/latest)
+1. Download `main.js`, `manifest.json`, `styles.css`, and the `emojis/` folder from the [latest release](../../releases/latest)
 2. Copy them to `<vault>/.obsidian/plugins/obsidian-soul/`
 3. Enable the plugin under **Settings → Community plugins**
 4. Complete the setup wizard (runs automatically on first load)
@@ -104,7 +104,7 @@ npm run lint     # run eslint
 npm test         # run tests
 ```
 
-To test locally: copy `main.js`, `manifest.json`, and `styles.css` to `<vault>/.obsidian/plugins/obsidian-soul/`, then reload Obsidian and enable the plugin under **Settings → Community plugins**.
+To test locally: copy `main.js`, `manifest.json`, `styles.css`, and the `emojis/` folder to `<vault>/.obsidian/plugins/obsidian-soul/`, then reload Obsidian and enable the plugin under **Settings → Community plugins**.
 
 ## License
 
