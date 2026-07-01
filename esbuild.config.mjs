@@ -1,7 +1,6 @@
 import esbuild from "esbuild";
 import process from "process";
 import { builtinModules } from 'node:module';
-import { cpSync, mkdirSync } from "node:fs";
 
 const banner =
 `/*
@@ -11,19 +10,6 @@ if you want to view the source, please visit the github repository of this plugi
 `;
 
 const prod = (process.argv[2] === "production");
-
-// Emoji PNGs are shipped as loose files next to main.js (loaded at runtime via
-// app.vault.adapter.getResourcePath) instead of being inlined as base64 — inlining
-// 16 MB of animated PNGs bloated main.js to ~21 MB.
-function copyEmojiAssets() {
-	mkdirSync("emojis", { recursive: true });
-	cpSync("src/emojis", "emojis", {
-		recursive: true,
-		filter: (src) => !src.endsWith(".ts"),
-	});
-}
-
-copyEmojiAssets();
 
 const context = await esbuild.context({
 	banner: {

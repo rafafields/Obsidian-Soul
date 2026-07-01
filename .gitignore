@@ -9,6 +9,7 @@ node_modules
 
 # Build output (distributed via GitHub Releases)
 *.map
+main.js
 
 # Obsidian plugin local data
 data.json
