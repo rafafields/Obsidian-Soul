@@ -8,11 +8,16 @@
 node_modules
 
 # Build output (distributed via GitHub Releases)
-main.js
 *.map
 
 # Obsidian plugin local data
 data.json
 
-# Private notes
+# Claude Code
+.claude/
+.agents/
+CLAUDE.md
+AGENTS.md
+skills-lock.json
+.scratch/
 _private/

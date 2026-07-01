@@ -91,6 +91,7 @@ All model calls go through [OpenRouter](https://openrouter.ai). The plugin ships
 |-------|----------|------|
 | GPT-5.4 Nano | OpenAI | Budget |
 | Qwen 3.5 27B | Qwen | Budget |
+| Claude Haiku 4.5 | Anthropic | Standard |
 | Claude Sonnet 4.6 | Anthropic | Standard |
 
 ## Development
