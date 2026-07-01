@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-soul",
-	"version": "1.0.2",
+	"version": "1.0.4",
 	"description": "A minimal AI agent with transparent, vault-based long-term memory and customizable soul personalities.",
 	"main": "main.js",
 	"type": "module",
@@ -11,7 +11,13 @@
 		"lint": "eslint .",
 		"test": "vitest run"
 	},
-	"keywords": ["obsidian", "ai", "agent", "memory", "llm"],
+	"keywords": [
+		"obsidian",
+		"ai",
+		"agent",
+		"memory",
+		"llm"
+	],
 	"license": "0BSD",
 	"devDependencies": {
 		"@eslint/js": "9.30.1",
