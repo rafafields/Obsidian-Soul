@@ -1,5 +1,3 @@
-import { CURATED_EMOJIS, THINKING_FILE, INLOVE_FILE, getEmojiSrc, getAssetSrc } from '../emojis';
-
 export type MascotState =
 	| 'idle'
 	| 'thinking'
@@ -12,10 +10,10 @@ export type MascotState =
 	| 'cry'
 	| 'angry';
 
-/** States that display the soul's own emoji as plain text. */
+/** States that display the soul's own emoji as plain text, unanimated. */
 const TEXT_STATES = new Set<MascotState>(['idle', 'blink']);
 
-/** Map from non-text state → emoji character whose PNG to show. */
+/** Map from non-text state → emoji character to show. */
 const STATE_EMOJI: Partial<Record<MascotState, string>> = {
 	thinking:   '🤔',
 	confused:   '🤔',
@@ -27,11 +25,26 @@ const STATE_EMOJI: Partial<Record<MascotState, string>> = {
 	angry:      '👺',
 };
 
+const ANIM_CLASSES = ['agent-mascot-anim-thinking', 'agent-mascot-anim-inlove', 'agent-mascot-anim-mood'];
+
+/** Map from non-text state → CSS animation class applied to the emoji text. */
+const STATE_ANIM_CLASS: Partial<Record<MascotState, string>> = {
+	thinking:   'agent-mascot-anim-thinking',
+	confused:   'agent-mascot-anim-thinking',
+	challenged: 'agent-mascot-anim-thinking',
+	inlove:     'agent-mascot-anim-inlove',
+	badass:     'agent-mascot-anim-mood',
+	sad:        'agent-mascot-anim-mood',
+	cry:        'agent-mascot-anim-mood',
+	angry:      'agent-mascot-anim-mood',
+};
+
 /**
- * Creates an animated mascot inside `container`.
+ * Creates an animated mascot inside `container`. Always renders as plain emoji text;
+ * non-text states get a CSS keyframe animation instead of an animated PNG.
  *
- * - **Idle / blink**: renders the soul's emoji as plain text.
- * - **All other states**: renders the corresponding animated PNG.
+ * - **Idle / blink**: renders the soul's own emoji, unanimated.
+ * - **All other states**: renders the state's emoji with a state-specific CSS animation.
  *
  * Returns:
  * - `setState(state)` — switch expression.
@@ -45,41 +58,23 @@ export function createMascotImg(
 ): { el: HTMLElement; setState: (state: MascotState) => void; setEmoji: (emoji: string) => void } {
 	const wrap = container.createDiv({ cls });
 
-	// Text element — shown in idle/blink states
 	const emojiSpan = wrap.createEl('span', {
 		cls: 'agent-mascot-emoji-text',
 		text: initialEmoji,
-	});
-
-	// Image element — shown in all other states
-	const img = wrap.createEl('img', {
-		cls: 'agent-mascot-png',
-		attr: { alt: '', draggable: 'false' },
 	});
 
 	let currentState: MascotState = initialState;
 	let currentEmoji = initialEmoji;
 
 	function applyState(state: MascotState): void {
+		emojiSpan.removeClass(...ANIM_CLASSES);
 		if (TEXT_STATES.has(state)) {
-			emojiSpan.style.display = '';
-			img.style.display = 'none';
+			emojiSpan.setText(currentEmoji);
 		} else {
-			// Use the soul's own animated PNG if it exists in the curated set;
-			// otherwise fall back to the state-specific emoji (e.g. wizard has no soul emoji).
-			const emojiChar = CURATED_EMOJIS.includes(currentEmoji) ? currentEmoji : (STATE_EMOJI[state] ?? '🤔');
-			const src = getEmojiSrc(emojiChar) ?? getAssetSrc(THINKING_FILE);
-			if (src) img.setAttribute('src', src);
-			emojiSpan.style.display = 'none';
-			img.style.display = '';
+			emojiSpan.setText(STATE_EMOJI[state] ?? '🤔');
+			const animClass = STATE_ANIM_CLASS[state];
+			if (animClass) emojiSpan.addClass(animClass);
 		}
-	}
-
-	// Preload inlove PNG so it renders instantly when needed
-	const inloveSrc = getAssetSrc(INLOVE_FILE);
-	if (inloveSrc) {
-		const preloadInlove = new Image();
-		preloadInlove.src = inloveSrc;
 	}
 
 	applyState(initialState);
@@ -93,10 +88,8 @@ export function createMascotImg(
 		},
 		setEmoji(emoji: string) {
 			currentEmoji = emoji;
-			emojiSpan.setText(emoji);
-			// If already in a non-text state, update the displayed PNG immediately
-			if (!TEXT_STATES.has(currentState)) {
-				applyState(currentState);
+			if (TEXT_STATES.has(currentState)) {
+				emojiSpan.setText(emoji);
 			}
 		},
 	};
